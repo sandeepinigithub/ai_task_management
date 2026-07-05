@@ -27,9 +27,10 @@ temp/
 .DS_Store
 Thumbs.db
 
-# IDE files
+# IDE / AI editor files
 .vscode/
 .idea/
+.cursor/
 *.swp
 *.swo
 
