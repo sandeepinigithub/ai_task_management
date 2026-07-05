@@ -1,0 +1,67 @@
+<form [formGroup]="registerForm" (ngSubmit)="onRegister()">
+
+  <!-- Username -->
+  <div class="form-group">
+    <p-inputgroup>
+      <p-inputgroup-addon><i class="pi pi-user"></i></p-inputgroup-addon>
+      <input pInputText type="text" placeholder="Username" formControlName="username" />
+    </p-inputgroup>
+    <app-validation-message [formCtrl]="registerForm.get('username')" [type]="'Username'" />
+  </div>
+
+  <!-- Email -->
+  <div class="form-group">
+    <p-inputgroup>
+      <p-inputgroup-addon><i class="pi pi-envelope"></i></p-inputgroup-addon>
+      <input pInputText type="email" placeholder="Email" formControlName="email" />
+    </p-inputgroup>
+    <app-validation-message [formCtrl]="registerForm.get('email')" [type]="'Email'" />
+  </div>
+
+  <!-- Role -->
+  <div class="form-group">
+    <p-select
+      formControlName="role"
+      [options]="roles"
+      optionLabel="label"
+      optionValue="value"
+      placeholder="Select Role"
+      [style]="{ width: '100%' }" />
+    <app-validation-message [formCtrl]="registerForm.get('role')" [type]="'Role'" />
+  </div>
+
+  <!-- Password -->
+  <div class="form-group">
+    <p-inputgroup>
+      <p-inputgroup-addon><i class="pi pi-lock"></i></p-inputgroup-addon>
+      <input pInputText [type]="showPassword ? 'text' : 'password'" placeholder="Password" formControlName="password" />
+      <p-inputgroup-addon class="password-toggle" (click)="showPassword = !showPassword">
+        <i [ngClass]="showPassword ? 'pi pi-eye-slash' : 'pi pi-eye'"></i>
+      </p-inputgroup-addon>
+    </p-inputgroup>
+    <app-validation-message [formCtrl]="registerForm.get('password')" [type]="'Password'" />
+  </div>
+
+  <!-- Confirm Password -->
+  <div class="form-group">
+    <p-inputgroup>
+      <p-inputgroup-addon><i class="pi pi-lock"></i></p-inputgroup-addon>
+      <input pInputText [type]="showConfirmPassword ? 'text' : 'password'" placeholder="Confirm Password"
+        formControlName="confirmPassword" />
+      <p-inputgroup-addon class="password-toggle" (click)="showConfirmPassword = !showConfirmPassword">
+        <i [ngClass]="showConfirmPassword ? 'pi pi-eye-slash' : 'pi pi-eye'"></i>
+      </p-inputgroup-addon>
+    </p-inputgroup>
+    @if (passwordMismatch) {
+      <small class="text-danger">Passwords do not match.</small>
+    }
+  </div>
+
+  <!-- Actions -->
+  <div class="d-flex gap-2 mt-2 justify-content-end">
+    <p-button type="button" label="Cancel" severity="secondary" styleClass="flex-1" (onClick)="cancel()" />
+    <p-button type="submit" label="Create Account" icon="pi pi-user-plus" styleClass="flex-1"
+      [disabled]="isSubmitLoader" [loading]="isSubmitLoader" />
+  </div>
+
+</form>

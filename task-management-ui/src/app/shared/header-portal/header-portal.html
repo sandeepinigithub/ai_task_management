@@ -1,0 +1,25 @@
+<header class="app-header">
+  <div class="header-inner d-flex justify-content-end align-items-center pointer">
+    <!-- Right Actions -->
+    <div class="header-actions">
+      <!-- Profile Avatar -->
+      <div class="action-item avatar-trigger" (click)="toggleProfileMenu($event)">
+        <img [src]="'assets/images/dummy-user.jpeg'" [alt]="userInfo.name" class="avatar-img" />
+        <i class="pi pi-chevron-down chevron-icon"></i>
+      </div>
+    </div>
+  </div>
+</header>
+
+<!-- Profile Popup Menu -->
+<p-menu #profileMenu [model]="profileMenuItems" [popup]="true" styleClass="profile-menu">
+  <ng-template pTemplate="start">
+    <div class="profile-card">
+      <img [src]="'assets/images/dummy-user.jpeg'" [alt]="userInfo.name" class="profile-avatar" />
+      <div class="profile-info">
+        <span class="profile-name">{{ userInfo.name }}</span>
+        <span class="profile-designation">{{ userInfo.designation }}</span>
+      </div>
+    </div>
+  </ng-template>
+</p-menu>

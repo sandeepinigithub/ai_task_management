@@ -1,0 +1,34 @@
+<div class="sidebar">
+    <div class="sidebar-logo text-center my-4">
+        <img src="assets/images/lorem-ipsum-logo-orange.png" alt="Logo" height="38" />
+    </div>
+
+    @if (menu) {
+        <div class="menu">
+            @for (item of menu.items; track item.name) {
+                @if (item.items.length > 0) {
+                    <div class="menu-group" [class.open]="isOpen(item.name)">
+                        <button class="menu-btn" (click)="toggle(item.name)">
+                            <i [class]="item.icon"></i>
+                            <span>{{ item.name }}</span>
+                            <i class="pi pi-chevron-down chevron"></i>
+                        </button>
+                        <div class="menu-children">
+                            @for (sub of item.items; track sub.name) {
+                                <a class="menu-child" [routerLink]="sub.route" routerLinkActive="child-active">
+                                    <span class="dot"></span>
+                                    <span>{{ sub.name }}</span>
+                                </a>
+                            }
+                        </div>
+                    </div>
+                } @else {
+                    <a class="menu-btn" [routerLink]="item.route" routerLinkActive="active">
+                        <i [class]="item.icon"></i>
+                        <span>{{ item.name }}</span>
+                    </a>
+                }
+            }
+        </div>
+    }
+</div>

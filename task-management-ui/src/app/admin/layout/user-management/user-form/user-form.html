@@ -1,0 +1,142 @@
+<app-comp-wrap [title]="isEditMode ? 'Edit User' : 'New User'">
+  <form [formGroup]="form" (ngSubmit)="onSubmit()" autocomplete="off">
+    @if (loading) {
+      <div class="d-flex justify-content-center py-5">
+        <p-progressSpinner strokeWidth="4" />
+      </div>
+    }
+
+    @if (!loading) {
+      <!-- Basic Information -->
+      <p-card header="" class="mx-2 mt-3">
+        <div class="p-fluid">
+          <div class="row g-3">
+            <div class="col-12 col-md-6">
+              <label class="fw-bold mb-2">Username <span class="text-danger">*</span></label>
+              <p-inputgroup>
+                <p-inputgroup-addon><i class="pi pi-user"></i></p-inputgroup-addon>
+                <input
+                  pInputText
+                  formControlName="username"
+                  placeholder="Enter username"
+                  autocomplete="new-password"
+                />
+              </p-inputgroup>
+              @if (form.get('username')?.invalid && form.get('username')?.touched) {
+                <small class="text-danger">Username is required (min 3 characters).</small>
+              }
+            </div>
+
+            <div class="col-12 col-md-6">
+              <label class="fw-bold mb-2">Email <span class="text-danger">*</span></label>
+              <p-inputgroup>
+                <p-inputgroup-addon><i class="pi pi-envelope"></i></p-inputgroup-addon>
+                <input
+                  pInputText
+                  type="email"
+                  formControlName="email"
+                  placeholder="Enter email"
+                  autocomplete="new-password"
+                />
+              </p-inputgroup>
+              @if (form.get('email')?.invalid && form.get('email')?.touched) {
+                <small class="text-danger">A valid email is required.</small>
+              }
+            </div>
+
+            <div class="col-12 col-md-6">
+              <label class="fw-bold mb-2">Role <span class="text-danger">*</span></label>
+              <p-select
+                formControlName="role"
+                [options]="roleOptions"
+                optionLabel="label"
+                optionValue="value"
+                placeholder="Select role"
+                class="w-100"
+              />
+              @if (form.get('role')?.invalid && form.get('role')?.touched) {
+                <small class="text-danger">Role is required.</small>
+              }
+            </div>
+
+            @if (!isEditMode) {
+              <div class="col-12 col-md-6">
+                <label class="fw-bold mb-2">
+                  Password
+                  <span class="text-danger">*</span>
+                </label>
+                <p-inputgroup>
+                  <p-inputgroup-addon><i class="pi pi-lock"></i></p-inputgroup-addon>
+                  <input
+                    pInputText
+                    [type]="showPassword ? 'text' : 'password'"
+                    formControlName="password"
+                    placeholder="Enter password"
+                    autocomplete="new-password"
+                  />
+                  <p-inputgroup-addon class="pointer" (click)="showPassword = !showPassword">
+                    <i [class]="showPassword ? 'pi pi-eye-slash' : 'pi pi-eye'"></i>
+                  </p-inputgroup-addon>
+                </p-inputgroup>
+                @if (form.get('password')?.invalid && form.get('password')?.touched) {
+                  <small class="text-danger">Password is required (min 6 characters).</small>
+                }
+              </div>
+            }
+
+            @if (selectedRole === 'employee') {
+              <div class="col-12 col-md-6">
+                <label class="fw-bold mb-2">Assign to Team Lead</label>
+                <p-select
+                  formControlName="teamLeadId"
+                  [options]="teamLeadOptions"
+                  optionLabel="label"
+                  optionValue="value"
+                  placeholder="Select team lead"
+                  [filter]="true"
+                  filterPlaceholder="Search"
+                  class="w-100"
+                >
+                  <ng-template pTemplate="empty">
+                    <div class="text-center text-muted small py-2">No team leads found.</div>
+                  </ng-template>
+                </p-select>
+              </div>
+            }
+          </div>
+        </div>
+      </p-card>
+
+      <!-- Status — only visible when editing an existing user -->
+      @if (isEditMode) {
+        <p-card header="Status" class="mx-2 mt-3">
+          <div class="d-flex align-items-center gap-3">
+            <p-toggleSwitch formControlName="isActive" />
+            <label class="mb-0">
+              {{ form.get('isActive')?.value ? 'Active' : 'Inactive' }}
+            </label>
+          </div>
+        </p-card>
+      }
+
+      <!-- Actions -->
+      <div class="d-flex gap-2 justify-content-end mx-2 my-3">
+        <p-button
+          label="Cancel"
+          severity="secondary"
+          (onClick)="routerNavigate('portal/user-management/users')"
+          [disabled]="submitting"
+        />
+        <p-button
+          [label]="isEditMode ? 'Update User' : 'Create User'"
+          type="submit"
+          severity="primary"
+          [loading]="submitting"
+          [disabled]="form.invalid || submitting"
+        />
+      </div>
+    }
+  </form>
+</app-comp-wrap>
+
+<p-toast />

@@ -1,0 +1,66 @@
+# Dependencies
+node_modules/
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Environment variables
+.env
+.env.*
+!.env.example
+
+# Build output
+dist/
+build/
+coverage/
+
+# Temporary files
+tmp/
+temp/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# IDE files
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# PM2
+.pm2/
+pids/
+*.pid
+*.pid.lock
+
+# Runtime data
+*.seed
+*.out
+
+# Cache
+.cache/
+.nyc_output/
+
+# Package manager
+package-lock.json
+yarn.lock
+pnpm-lock.yaml
+
+# (Remove the above lock file entry if you want to commit lock files.
+# In most projects, package-lock.json SHOULD be committed.)
+
+# Uploads (if generated at runtime)
+uploads/
+
+# Database
+*.sqlite
+*.sqlite3
+
+# Misc
+*.tgz

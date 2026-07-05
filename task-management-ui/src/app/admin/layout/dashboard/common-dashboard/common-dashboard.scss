@@ -1,0 +1,55 @@
+.dashboard-container {
+  background-color: #f8f9fa;
+  min-height: 100%;
+}
+
+// Summary Cards
+.card-icon-wrap {
+  width: 45px;
+  height: 45px;
+  flex-shrink: 0;
+
+  &.bg-danger {
+    background-color: #ef4444 !important;
+  }
+}
+
+:host ::ng-deep {
+  .summary-card {
+    border: none;
+    border-radius: 12px;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.08);
+    transition: box-shadow 0.2s ease, transform 0.2s ease;
+
+    &:hover {
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
+      transform: translateY(-2px);
+    }
+
+    .p-card-body {
+      padding: 1.25rem 1.5rem;
+    }
+  }
+
+  .tasks-card {
+    border: none;
+    border-radius: 12px;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.08);
+
+    .p-card-header {
+      font-size: 1rem;
+      font-weight: 600;
+      padding: 1.25rem 1.5rem 0;
+      border-bottom: none;
+    }
+
+    .p-card-body {
+      padding: 1rem 1.5rem 1.5rem;
+    }
+  }
+}
+
+.chip-sm {
+  font-size: 0.75rem;
+  padding: 0.1rem 0.5rem;
+}

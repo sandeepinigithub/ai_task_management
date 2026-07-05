@@ -1,0 +1,9 @@
+<div class="wrapper-navigation">
+    <div class="container-navigation d-flex">
+        <app-sidebar [menu]="menu" />
+        <app-header-portal class="w-100"></app-header-portal>
+    </div>
+    <div class="position-absolute" [ngClass]="'router-container'">
+        <ng-content class="d-block"></ng-content>
+    </div>
+</div>

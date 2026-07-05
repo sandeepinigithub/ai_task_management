@@ -1,0 +1,222 @@
+<div
+  class="tasks-container container-fluid py-4"
+  *appShowGridAction="getActionPermissions('Portal.TaskManagement.Tasks'); permissonValue: 'view'"
+>
+  <!-- Page Header -->
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <div class="d-flex align-items-center gap-3">
+      <div>
+        <h4 class="mb-0 fw-bold text-dark">Task Management</h4>
+      </div>
+    </div>
+    <div class="d-flex align-items-center gap-2">
+      <p-button
+        *appShowGridAction="
+          getActionPermissions('Portal.TaskManagement.Tasks');
+          permissonValue: 'add'
+        "
+        label="New Task"
+        icon="pi pi-plus"
+        severity="primary"
+        (click)="openNewTask()"
+      ></p-button>
+      <div class="d-flex align-items-center">
+        <p-tieredmenu #menu [model]="menuItems()" [popup]="true" [appendTo]="'body'" />
+        <p-button
+          (click)="menu.toggle($event)"
+          icon="pi pi-ellipsis-v"
+          [rounded]="true"
+          severity="secondary"
+          [text]="true"
+        >
+        </p-button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Filters -->
+  <div class="card mb-3 filter-card">
+    <div class="p-3">
+      <div class="row g-3 align-items-end">
+        <!-- Search -->
+        <div class="col-12 col-md-3">
+          <label class="d-block small text-muted mb-1">Search</label>
+          <p-inputgroup>
+            <p-inputgroup-addon>
+              <i class="pi pi-search"></i>
+            </p-inputgroup-addon>
+            <input
+              pInputText
+              placeholder="Search by title"
+              [(ngModel)]="searchText"
+              (input)="onSearch()"
+              class="w-100"
+            />
+          </p-inputgroup>
+        </div>
+
+        <!-- Status Filter -->
+        <div class="col-12 col-md-2">
+          <label class="d-block small text-muted mb-1">Status</label>
+          <p-select
+            [options]="statusOptions"
+            [(ngModel)]="selectedStatus"
+            placeholder="All Statuses"
+            [showClear]="true"
+            (onChange)="filterChange()"
+            class="w-100"
+          >
+          </p-select>
+        </div>
+
+        <div class="col-12 col-md-2">
+          <label class="d-block small text-muted mb-1"> Assign To </label>
+          <p-select
+            [(ngModel)]="assignedTo"
+            [options]="userOptions"
+            optionLabel="label"
+            optionValue="value"
+            placeholder="Select"
+            [filter]="true"
+            filterPlaceholder="Search users"
+            (onChange)="filterChange()"
+            class="w-100"
+          >
+          </p-select>
+        </div>
+        <div class="col-12 col-md-3">
+          <label class="d-block small text-muted mb-1"> Created By </label>
+          <p-select
+            [(ngModel)]="createdBy"
+            [options]="userOptions"
+            optionLabel="label"
+            optionValue="value"
+            placeholder="Select"
+            [filter]="true"
+            filterPlaceholder="Search users"
+            (onChange)="filterChange()"
+            class="w-100"
+          >
+          </p-select>
+        </div>
+        <!-- Clear -->
+        <div class="col-12 col-md-2">
+          <p-button
+            label="Clear Filters"
+            [text]="true"
+            severity="secondary"
+            (click)="clearFilters()"
+            styleClass="w-100"
+          >
+          </p-button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Table -->
+  <div class="card table-card">
+    <p-table
+      [value]="primengTableHelper.records"
+      [loading]="primengTableHelper.isLoading"
+      [paginator]="true"
+      [rows]="limit"
+      [(first)]="first"
+      [totalRecords]="primengTableHelper.totalRecordsCount"
+      [rowsPerPageOptions]="primengTableHelper.predefinedRecordsCountPerPage"
+      [lazy]="true"
+      (onLazyLoad)="onLazyLoad($event)"
+      class="p-datatable-sm"
+      [tableStyle]="{ 'min-width': '55rem' }"
+    >
+      <ng-template pTemplate="header">
+        <tr>
+          <th style="min-width: 12rem">TASK</th>
+          <th style="min-width: 9rem">ASSIGNED TO</th>
+          <th style="min-width: 9rem">CREATED BY</th>
+          <th style="width: 10rem">STATUS</th>
+          <th style="width: 9rem">DATE</th>
+          <th style="width: 6rem">ACTIONS</th>
+        </tr>
+      </ng-template>
+
+      <ng-template pTemplate="body" let-task>
+        <tr>
+          <td>
+            <div class="fw-bold text-dark">{{ task.title }}</div>
+          </td>
+          <td>
+            @if (task.assignedTo?._id == userDetails?._id) {
+              <p-chip label="Me" class="chip-sm" />
+            } @else {
+              <span class="small">{{ task.assignedTo?.username ?? '—' }}</span>
+            }
+          </td>
+          <td>
+            @if (task.createdBy?._id == userDetails?._id) {
+              <p-chip label="Me" class="chip-sm" />
+            } @else {
+              <span class="small">{{ task.createdBy?.username ?? '—' }}</span>
+            }
+          </td>
+          <td>
+            <p-tag
+              [value]="getStatusLabel(task.status + '')"
+              [severity]="getStatusSeverity(task.status + '')"
+            />
+          </td>
+          <td>
+            <span class="small text-muted text-nowrap">
+              {{ dateUtil.formatDate(task.createdAt) }}
+            </span>
+          </td>
+          <td>
+            <div class="d-flex gap-1">
+              <p-button
+                icon="pi pi-eye"
+                [text]="true"
+                severity="primary"
+                size="small"
+                (click)="viewTask(task)"
+                pTooltip="View"
+                tooltipPosition="top"
+              />
+              <p-button
+                icon="pi pi-pencil"
+                [text]="true"
+                severity="info"
+                size="small"
+                (click)="openEditTask(task)"
+                pTooltip="Edit"
+                tooltipPosition="top"
+              />
+              <p-button
+                icon="pi pi-trash"
+                [text]="true"
+                severity="danger"
+                size="small"
+                (click)="deleteTask(task)"
+                pTooltip="Delete"
+                tooltipPosition="top"
+              />
+            </div>
+          </td>
+        </tr>
+      </ng-template>
+
+      <ng-template pTemplate="emptymessage">
+        <tr>
+          <td colspan="8" class="text-center py-5">
+            <div class="text-muted">
+              <i class="pi pi-inbox fs-1 d-block mb-2 text-muted"></i>
+              <p class="mb-0">No tasks found</p>
+              <small>Try adjusting your filters or create a new task</small>
+            </div>
+          </td>
+        </tr>
+      </ng-template>
+    </p-table>
+  </div>
+</div>
+
+<p-toast></p-toast>

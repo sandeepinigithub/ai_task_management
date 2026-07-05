@@ -1,0 +1,71 @@
+.sidebar {
+    background: #274472;
+    position: fixed;
+    width: 251px;
+    height: 100vh;
+    overflow-y: auto;
+    z-index: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+.menu {
+    padding: 0.75rem;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.menu-btn {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    width: 100%;
+    padding: 0.7rem 1rem;
+    background: #274472;
+    color: #fff;
+    font-size: 0.9rem;
+    font-weight: 500;
+    border: none;
+    border-radius: 8px;
+    text-decoration: none;
+    cursor: pointer;
+    transition: background 0.2s, color 0.2s, box-shadow 0.2s;
+
+    i { color: #fff; font-size: 1rem; }
+
+    .chevron { margin-left: auto; font-size: 0.7rem; transition: transform 0.25s; }
+
+    &:hover,
+    &.active { background: #fff; color: #274472; box-shadow: 0 2px 8px rgba(0,0,0,0.15); i { color: #274472; } }
+}
+
+.menu-group.open {
+    > .menu-btn .chevron { transform: rotate(180deg); }
+    .menu-children { max-height: 300px; }
+}
+
+.menu-children {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.28s ease;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    padding-top: 4px;
+}
+
+.menu-child {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 0.6rem 1rem 0.6rem 1.5rem;
+    color: #fff;
+    font-size: 0.855rem;
+    text-decoration: none;
+    border-radius: 6px;
+    transition: background 0.2s, color 0.2s;
+
+    &:hover,
+    &.child-active { background: #fff; color: #274472; }
+}

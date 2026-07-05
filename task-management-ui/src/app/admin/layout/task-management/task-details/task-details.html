@@ -1,0 +1,105 @@
+<app-comp-wrap title="Task Details">
+  @if (loading) {
+    <div class="d-flex justify-content-center py-5">
+      <p-progressSpinner strokeWidth="4" />
+    </div>
+  }
+
+  @if (!loading && task) {
+    <div class="mx-2 mt-3 mb-3 d-flex flex-column gap-3">
+      <!-- Task Info Card -->
+      <p-card header="Task Info">
+        <div class="row g-4">
+          <div class="col-12 col-md-6">
+            <span class="text-muted small d-block mb-1">Title</span>
+            <p class="fw-semibold mb-0">{{ task.title }}</p>
+          </div>
+          <div class="col-12 col-md-6">
+            <span class="text-muted small d-block mb-1">Description</span>
+            <p class="mb-0">{{ task.description || '—' }}</p>
+          </div>
+          <div class="col-12 col-md-6">
+            <span class="text-muted small d-block mb-1">Status</span>
+            <p-tag
+              [value]="getStatusLabel(task.status)"
+              [severity]="getStatusSeverity(task.status)"
+            />
+          </div>
+          <div class="col-12 col-md-6">
+            <span class="text-muted small d-block mb-1">Created At</span>
+            <p class="mb-0">{{ dateUtil.formatDate(task.createdAt) }}</p>
+          </div>
+          <div class="col-12 col-md-6">
+            <span class="text-muted small d-block mb-1">Last Updated</span>
+            <p class="mb-0">{{ dateUtil.formatDate(task.updatedAt) }}</p>
+          </div>
+        </div>
+      </p-card>
+
+      <!-- Assigned To Card -->
+      @if (task.assignedTo) {
+        <p-card header="Assigned To">
+          <div class="row g-4">
+            <div class="col-12 col-md-6">
+              <span class="text-muted small d-block mb-1">Username</span>
+              <p class="fw-semibold mb-0">{{ task.assignedTo.username }}</p>
+            </div>
+            <div class="col-12 col-md-6">
+              <span class="text-muted small d-block mb-1">Email</span>
+              <p class="mb-0">{{ task.assignedTo.email }}</p>
+            </div>
+            <div class="col-12 col-md-6">
+              <span class="text-muted small d-block mb-1">Role</span>
+              <p-tag [value]="task.assignedTo.role" severity="secondary" />
+            </div>
+          </div>
+        </p-card>
+      }
+
+      <!-- Created By Card -->
+      @if (task.createdBy) {
+        <p-card header="Created By">
+          <div class="row g-4">
+            <div class="col-12 col-md-6">
+              <span class="text-muted small d-block mb-1">Username</span>
+              <p class="fw-semibold mb-0">{{ task.createdBy.username }}</p>
+            </div>
+            <div class="col-12 col-md-6">
+              <span class="text-muted small d-block mb-1">Email</span>
+              <p class="mb-0">{{ task.createdBy.email }}</p>
+            </div>
+            <div class="col-12 col-md-6">
+              <span class="text-muted small d-block mb-1">Role</span>
+              <p-tag [value]="task.createdBy.role" severity="secondary" />
+            </div>
+          </div>
+        </p-card>
+      }
+
+      <!-- Team Lead Card -->
+      @if (task.teamLeadId) {
+        <p-card header="Team Lead">
+          <div class="row g-4">
+            <div class="col-12 col-md-6">
+              <span class="text-muted small d-block mb-1">Username</span>
+              <p class="fw-semibold mb-0">{{ task.teamLeadId.username }}</p>
+            </div>
+            <div class="col-12 col-md-6">
+              <span class="text-muted small d-block mb-1">Email</span>
+              <p class="mb-0">{{ task.teamLeadId.email }}</p>
+            </div>
+          </div>
+        </p-card>
+      }
+    </div>
+  }
+
+  @if (!loading && !task) {
+    <div class="text-center py-5 text-muted">
+      <i class="pi pi-inbox fs-2 d-block mb-2"></i>
+      <p>Task not found.</p>
+    </div>
+  }
+</app-comp-wrap>
+
+<p-toast />

@@ -1,0 +1,9 @@
+@if (formCtrl?.invalid && (formCtrl?.dirty || formCtrl?.touched)) {
+<div class="custom-error">
+    <p-message severity="error" variant="simple" size="small">{{ errorMessage }}</p-message>
+</div>
+}
+
+
+<!-- ================= Example to use ===================== -->
+<!-- <app-validation-message [formCtrl]="myForm.get('name')" [type]="'Name'"></app-validation-message> -->

@@ -1,0 +1,29 @@
+/* You can add global styles to this file, and also import other style files */
+@use "./assets/scss/main" as *;
+
+.pointer{
+  cursor: pointer !important;
+}
+
+
+
+
+
+// ========= primeNg Table Customization START ============
+.p-datatable {
+  font-family: 'Lora', sans-serif !important;
+  font-size: 14px !important;
+}
+
+.p-datatable .p-datatable-tbody>tr>td,
+.p-datatable .p-datatable-thead>tr>th {
+  border-bottom: 1px dashed #e4e4e4;
+}
+
+.primeng-no-data {
+  text-align: center;
+  margin-top: 10px;
+  margin-bottom: 10px;
+}
+
+// ========= primeNg Table Customization END ==============

@@ -1,0 +1,85 @@
+<app-comp-wrap title="User Details">
+  @if (loading) {
+    <div class="d-flex justify-content-center py-5">
+      <p-progressSpinner strokeWidth="4" />
+    </div>
+  }
+
+  @if (!loading && user) {
+    <div class="mx-2 mt-3 mb-3 d-flex flex-column gap-3">
+
+      <!-- Profile Card -->
+      <p-card header="Profile">
+        <div class="row g-4">
+          <div class="col-12 col-md-6">
+            <span class="text-muted small d-block mb-1">Username</span>
+            <p class="fw-semibold mb-0">{{ user.username }}</p>
+          </div>
+          <div class="col-12 col-md-6">
+            <span class="text-muted small d-block mb-1">Email</span>
+            <p class="mb-0">{{ user.email }}</p>
+          </div>
+          <div class="col-12 col-md-6">
+            <span class="text-muted small d-block mb-1">Role</span>
+            <p-tag [value]="getRoleLabel(user.role + '')" [severity]="getRoleSeverity(user.role + '')" />
+          </div>
+          <div class="col-12 col-md-6">
+            <span class="text-muted small d-block mb-1">Status</span>
+            <p-tag [value]="user.isActive ? 'Active' : 'Inactive'"
+              [severity]="user.isActive ? 'success' : 'danger'" />
+          </div>
+          <div class="col-12 col-md-6">
+            <span class="text-muted small d-block mb-1">Created At</span>
+            <p class="mb-0">{{ dateUtil.formatDateTime(user.createdAt) }}</p>
+          </div>
+          <div class="col-12 col-md-6">
+            <span class="text-muted small d-block mb-1">Last Updated</span>
+            <p class="mb-0">{{ dateUtil.formatDateTime(user.updatedAt) }}</p>
+          </div>
+        </div>
+      </p-card>
+
+      <!-- Manager Card -->
+      @if (user.managerId) {
+        <p-card header="Manager">
+          <div class="row g-4">
+            <div class="col-12 col-md-6">
+              <span class="text-muted small d-block mb-1">Name</span>
+              <p class="fw-semibold mb-0">{{ user.managerId.username }}</p>
+            </div>
+            <div class="col-12 col-md-6">
+              <span class="text-muted small d-block mb-1">Email</span>
+              <p class="mb-0">{{ user.managerId.email }}</p>
+            </div>
+          </div>
+        </p-card>
+      }
+
+      <!-- Team Lead Card -->
+      @if (user.teamLeadId) {
+        <p-card header="Team Lead">
+          <div class="row g-4">
+            <div class="col-12 col-md-6">
+              <span class="text-muted small d-block mb-1">Name</span>
+              <p class="fw-semibold mb-0">{{ user.teamLeadId.username }}</p>
+            </div>
+            <div class="col-12 col-md-6">
+              <span class="text-muted small d-block mb-1">Email</span>
+              <p class="mb-0">{{ user.teamLeadId.email }}</p>
+            </div>
+          </div>
+        </p-card>
+      }
+
+    </div>
+  }
+
+  @if (!loading && !user) {
+    <div class="text-center py-5 text-muted">
+      <i class="pi pi-user fs-2 d-block mb-2"></i>
+      <p>User not found.</p>
+    </div>
+  }
+</app-comp-wrap>
+
+<p-toast />

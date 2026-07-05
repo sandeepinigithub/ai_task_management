@@ -1,0 +1,83 @@
+<app-comp-wrap [title]="isEditMode ? 'Edit Task' : 'New Task'">
+  <form [formGroup]="form" (ngSubmit)="onSubmit()">
+
+    @if (loading) {
+      <div class="d-flex justify-content-center py-5">
+        <p-progressSpinner strokeWidth="4" />
+      </div>
+    }
+
+    @if (!loading) {
+
+      <!-- Task Details -->
+      <p-card header="" class="mx-2 mt-3">
+        <div class="p-fluid">
+          <div class="row g-3">
+
+            <div class="col-12">
+              <label class="fw-bold mb-2">Title <span class="text-danger">*</span></label>
+              <input pInputText formControlName="title" placeholder="Enter task title" class="w-100" />
+              @if (form.get('title')?.invalid && form.get('title')?.touched) {
+                <small class="text-danger">Title is required (min 3 characters).</small>
+              }
+            </div>
+
+            <div class="col-12">
+              <label class="fw-bold mb-2">Description</label>
+              <textarea pInputTextarea formControlName="description" placeholder="Describe the task"
+                rows="4" class="w-100"></textarea>
+            </div>
+
+          </div>
+        </div>
+      </p-card>
+
+      <!-- Assignment & Status -->
+      <p-card header="Assignment & Status" class="mx-2 mt-3">
+        <div class="p-fluid">
+          <div class="row g-3">
+
+            <div class="col-12 col-md-6">
+              <label class="fw-bold mb-2">
+                Status <span class="text-danger">*</span>
+              </label>
+              <p-select formControlName="status" [options]="statusOptions" optionLabel="label"
+                optionValue="value" placeholder="Select status" class="w-100" />
+              @if (form.get('status')?.invalid && form.get('status')?.touched) {
+                <small class="text-danger">Status is required.</small>
+              }
+            </div>
+
+            @if (canAssign) {
+              <div class="col-12 col-md-6">
+                <label class="fw-bold mb-2">
+                  Assign To <span class="text-danger">*</span>
+                </label>
+                <p-select formControlName="assignedTo" [options]="userOptions" optionLabel="label"
+                  optionValue="value" placeholder="Select a user" [filter]="true"
+                  filterPlaceholder="Search users" class="w-100">
+                  <ng-template pTemplate="empty">
+                    <div class="text-center text-muted small py-2">No users found.</div>
+                  </ng-template>
+                </p-select>
+              </div>
+            }
+
+          </div>
+        </div>
+      </p-card>
+
+      <!-- Actions -->
+      <div class="d-flex gap-2 justify-content-end mx-2 my-3">
+        <p-button label="Cancel" severity="secondary" (onClick)="routerNavigate('portal/task-management/tasks')"
+          [disabled]="submitting" />
+        <p-button [label]="isEditMode ? 'Update Task' : 'Create Task'" type="submit" severity="primary"
+          [loading]="submitting" [disabled]="form.invalid || submitting" />
+      </div>
+
+    }
+
+  </form>
+</app-comp-wrap>
+
+<p-toast />
