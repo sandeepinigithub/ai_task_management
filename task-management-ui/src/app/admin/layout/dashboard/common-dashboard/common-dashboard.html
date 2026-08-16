@@ -1,4 +1,5 @@
 <div class="dashboard-container container-fluid py-4" *appShowGridAction="getActionPermissions('Portal.Dashboard');permissonValue: 'view'">
+
   <!-- Page Header -->
   <div class="d-flex align-items-center justify-content-end mb-4">
     <div class="text-muted small">
@@ -26,11 +27,7 @@
                 <div class="text-muted small mb-1">{{ card.label }}</div>
                 <div class="h3 mb-0 fw-bold text-dark">{{ card.value }}</div>
               </div>
-              <div
-                class="card-icon-wrap {{
-                  card.colorClass
-                }} text-white rounded-circle d-flex align-items-center justify-content-center"
-              >
+              <div class="card-icon-wrap {{ card.colorClass }} text-white rounded-circle d-flex align-items-center justify-content-center">
                 <i class="pi {{ card.icon }} fs-4"></i>
               </div>
             </div>
@@ -39,6 +36,160 @@
       }
     </div>
   }
+
+  <!-- ── AI Assistant Panel ─────────────────────────────────────────── -->
+  @if (!loading) {
+    <div class="row g-3 mb-4">
+
+      <!-- Left: Priority Advice -->
+      <div class="col-12 col-lg-4">
+        <p-card styleClass="ai-card h-100">
+          <ng-template pTemplate="header">
+            <div class="ai-card-header d-flex align-items-center justify-content-between px-3 pt-3">
+              <div class="d-flex align-items-center gap-2">
+                <div class="ai-icon-wrap bg-purple text-white rounded-circle d-flex align-items-center justify-content-center">
+                  <i class="pi pi-star-fill fs-6"></i>
+                </div>
+                <span class="fw-semibold text-dark">Today's Focus</span>
+              </div>
+              <button
+                pButton
+                icon="pi pi-refresh"
+                class="p-button-text p-button-sm p-button-rounded"
+                [disabled]="aiAdviceLoading"
+                (click)="loadPriorityAdvice()"
+                pTooltip="Refresh advice"
+              ></button>
+            </div>
+          </ng-template>
+
+          <div class="ai-advice-body">
+            @if (aiAdviceLoading) {
+              <div class="d-flex flex-column gap-2">
+                <p-skeleton height="14px" width="95%"></p-skeleton>
+                <p-skeleton height="14px" width="80%"></p-skeleton>
+                <p-skeleton height="14px" width="88%"></p-skeleton>
+                <p-skeleton height="14px" width="72%"></p-skeleton>
+              </div>
+            } @else if (aiAdvice) {
+              <div class="ai-advice-text">{{ aiAdvice }}</div>
+            } @else {
+              <div class="text-center text-muted py-3">
+                <i class="pi pi-info-circle d-block fs-3 mb-2"></i>
+                <small>No advice available</small>
+              </div>
+            }
+          </div>
+
+          <ng-template pTemplate="footer">
+            <div class="ai-footer-badge d-flex align-items-center gap-1">
+              <i class="pi pi-bolt text-purple" style="font-size: 0.7rem"></i>
+              <small class="text-muted" style="font-size: 0.7rem">Powered by AI · Updates with your tasks</small>
+            </div>
+          </ng-template>
+        </p-card>
+      </div>
+
+      <!-- Right: AI Chat -->
+      <div class="col-12 col-lg-8">
+        <p-card styleClass="ai-card h-100">
+          <ng-template pTemplate="header">
+            <div class="ai-card-header d-flex align-items-center justify-content-between px-3 pt-3">
+              <div class="d-flex align-items-center gap-2">
+                <div class="ai-icon-wrap bg-purple text-white rounded-circle d-flex align-items-center justify-content-center">
+                  <i class="pi pi-comments fs-6"></i>
+                </div>
+                <span class="fw-semibold text-dark">AI Assistant</span>
+                <p-tag value="Beta" severity="info" styleClass="tag-xs"></p-tag>
+              </div>
+              <button
+                pButton
+                icon="pi pi-trash"
+                class="p-button-text p-button-sm p-button-rounded p-button-danger"
+                [disabled]="isStreaming"
+                (click)="clearChat()"
+                pTooltip="Clear chat"
+              ></button>
+            </div>
+          </ng-template>
+
+          <!-- Messages area -->
+          <div class="chat-body" #chatBody>
+            @if (chatMessages.length === 0 && !isStreaming) {
+              <div class="chat-empty text-center text-muted py-3">
+                <i class="pi pi-comments d-block fs-2 mb-2 text-purple-light"></i>
+                <p class="mb-1 fw-medium">Ask me anything about your tasks</p>
+                <div class="d-flex flex-wrap justify-content-center gap-2 mt-3">
+                  <span class="chat-suggestion" (click)="chatInput = 'What should I focus on today?'; sendMessage()">
+                    What should I focus on today?
+                  </span>
+                  <span class="chat-suggestion" (click)="chatInput = 'How many tasks are pending?'; sendMessage()">
+                    How many tasks are pending?
+                  </span>
+                  <span class="chat-suggestion" (click)="chatInput = 'Summarize my team\'s work'; sendMessage()">
+                    Summarize my team's work
+                  </span>
+                </div>
+              </div>
+            }
+
+            @for (msg of chatMessages; track $index) {
+              <div class="chat-message" [class.human]="msg.role === 'human'" [class.ai]="msg.role === 'ai'">
+                @if (msg.role === 'ai') {
+                  <div class="msg-avatar ai-avatar">
+                    <i class="pi pi-star-fill"></i>
+                  </div>
+                }
+                <div class="msg-bubble" [class.human-bubble]="msg.role === 'human'" [class.ai-bubble]="msg.role === 'ai'">
+                  {{ msg.content }}
+                </div>
+                @if (msg.role === 'human') {
+                  <div class="msg-avatar human-avatar">
+                    <i class="pi pi-user"></i>
+                  </div>
+                }
+              </div>
+            }
+
+            <!-- Live streaming message -->
+            @if (isStreaming) {
+              <div class="chat-message ai">
+                <div class="msg-avatar ai-avatar">
+                  <i class="pi pi-star-fill"></i>
+                </div>
+                <div class="msg-bubble ai-bubble">
+                  {{ streamingText }}<span class="cursor-blink">|</span>
+                </div>
+              </div>
+            }
+          </div>
+
+          <!-- Input area -->
+          <div class="chat-input-area mt-2">
+            <p-inputgroup>
+              <input
+                pInputText
+                [(ngModel)]="chatInput"
+                placeholder="Ask about your tasks..."
+                (keydown)="onChatKeydown($event)"
+                [disabled]="isStreaming"
+                class="chat-input"
+              />
+              <button
+                pButton
+                [icon]="isStreaming ? 'pi pi-spin pi-spinner' : 'pi pi-send'"
+                class="p-button-sm send-btn"
+                [disabled]="!chatInput.trim() || isStreaming"
+                (click)="sendMessage()"
+              ></button>
+            </p-inputgroup>
+          </div>
+        </p-card>
+      </div>
+
+    </div>
+  }
+  <!-- ── End AI Assistant Panel ─────────────────────────────────────── -->
 
   <!-- Recent Tasks Table -->
   @if (!loading) {
@@ -77,10 +228,7 @@
                       }
                     </div>
                   </td>
-                  <td>
-                    {{dateUtil.formatDate(task.createdAt)}}
-
-                  </td>
+                  <td>{{ dateUtil.formatDate(task.createdAt) }}</td>
                   <td>
                     <p-tag
                       [value]="getStatusLabel(task.status)"

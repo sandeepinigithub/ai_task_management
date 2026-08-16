@@ -42,7 +42,7 @@ def create_task_tools(token: str) -> list:
             params["status"] = status
 
         response = await client.get_tasks(**params)
-        tasks = response.get("data", {}).get("docs", [])
+        tasks = response.get("data", {}).get("tasks", [])
 
         return json.dumps([
             {
@@ -99,7 +99,7 @@ def create_task_tools(token: str) -> list:
         Use the 'id' field when assigning tasks.
         """
         response = await client.get_master_user_list()
-        users = response.get("data", [])
+        users = response.get("data", {}).get("users", [])
         return json.dumps([
             {"id": u["_id"], "username": u["username"], "role": u["role"]}
             for u in users

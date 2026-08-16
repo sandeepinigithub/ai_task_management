@@ -48,7 +48,7 @@ async def find_stale_tasks(state: EscalationState) -> EscalationState:
     """
     client = NodeAPIClient(state["token"])
     response = await client.get_tasks(status="pending", limit=100)
-    all_pending = response.get("data", {}).get("docs", [])
+    all_pending = response.get("data", {}).get("tasks", [])
 
     cutoff = datetime.now(timezone.utc) - timedelta(days=state.get("stale_days", 3))
 

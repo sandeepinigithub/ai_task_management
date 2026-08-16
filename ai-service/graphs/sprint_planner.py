@@ -51,10 +51,10 @@ async def fetch_data(state: SprintState) -> SprintState:
 
     try:
         tasks_resp = await client.get_tasks(status="pending", limit=50)
-        pending_tasks = tasks_resp.get("data", {}).get("docs", [])
+        pending_tasks = tasks_resp.get("data", {}).get("tasks", [])
 
         users_resp = await client.get_master_user_list()
-        team_members = users_resp.get("data", [])
+        team_members = users_resp.get("data", {}).get("users", [])
 
         return {**state, "pending_tasks": pending_tasks, "team_members": team_members}
 

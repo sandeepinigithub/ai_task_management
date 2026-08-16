@@ -51,7 +51,7 @@ async def chat(request: ChatRequest, authorization: str = Header(...)):
     except Exception as e:
         raise HTTPException(status_code=502, detail=f"Failed to fetch tasks: {e}")
 
-    tasks = tasks_resp.get("data", {}).get("docs", [])
+    tasks = tasks_resp.get("data", {}).get("tasks", [])
 
     task_context = json.dumps([
         {
@@ -96,7 +96,7 @@ async def chat_stream(request: ChatRequest, authorization: str = Header(...)):
     client = NodeAPIClient(token)
 
     tasks_resp = await client.get_tasks(limit=20)
-    tasks = tasks_resp.get("data", {}).get("docs", [])
+    tasks = tasks_resp.get("data", {}).get("tasks", [])
     task_context = json.dumps([{"title": t["title"], "status": t["status"]} for t in tasks])
 
     prompt = ChatPromptTemplate.from_messages([
@@ -129,7 +129,7 @@ async def summarize(request: SummarizeRequest, authorization: str = Header(...))
         params["status"] = request.status
 
     tasks_resp = await client.get_tasks(**params)
-    tasks = tasks_resp.get("data", {}).get("docs", [])
+    tasks = tasks_resp.get("data", {}).get("tasks", [])
 
     summary = await summarize_tasks(tasks)
     return {"summary": summary, "task_count": len(tasks)}
@@ -146,7 +146,7 @@ async def priority_advice(authorization: str = Header(...)):
     client = NodeAPIClient(token)
 
     tasks_resp = await client.get_tasks()
-    tasks = tasks_resp.get("data", {}).get("docs", [])
+    tasks = tasks_resp.get("data", {}).get("tasks", [])
 
     advice = await get_priority_advice(tasks)
     return {"advice": advice}

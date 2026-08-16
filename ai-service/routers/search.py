@@ -45,7 +45,7 @@ async def index_tasks(authorization: str = Header(...)):
     except Exception as e:
         raise HTTPException(status_code=502, detail=str(e))
 
-    tasks = tasks_resp.get("data", {}).get("docs", [])
+    tasks = tasks_resp.get("data", {}).get("tasks", [])
 
     if not tasks:
         return {"message": "No tasks found to index", "indexed": 0}
